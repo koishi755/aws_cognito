@@ -30,6 +30,7 @@ def register():
     updated_at = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     updated_at = int(updated_at)
 
+    #DynamoDBにユーザーを登録
     table.put_item(
         Item={
             'user_id': register_id,
