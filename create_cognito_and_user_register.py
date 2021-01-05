@@ -62,14 +62,16 @@ def create_cognito(event):
     password = event['password']
     email = event['email']
     
+    bucket = 'update-user-profile'
+    key = user_name + '/update/'
+    
 
     #ランダムなドメインを生成
     dat = string.digits + string.ascii_lowercase
     domain = ''.join([random.choice(dat) for i in range(10)])
 
     #各ユーザのページ
-    user_profile_url = 'https://update-user-profile.s3-ap-northeast-1.amazonaws.com/{}.html'
-    user_profile_url = user_profile_url.format(user_name)
+    user_profile_url = 'https://update-user-profile.s3-ap-northeast-1.amazonaws.com/{}/update/'.format(user_name)
 
     #お約束
     client = boto3.client('cognito-idp')
@@ -171,7 +173,7 @@ def create_cognito(event):
         'https': 'https://{}.auth.ap-northeast-1.amazoncognito.com/'.format(domain),
         'login': 'login?client_id={}&'.format(client_id),
         'response_type': 'response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&',
-        'redirect_uri': 'redirect_uri=https://update-user-profile.s3-ap-northeast-1.amazonaws.com/{}.html'.format(user_name)
+        'redirect_uri': 'redirect_uri=https://{}.s3-ap-northeast-1.amazonaws.com/{}/update/'.format(bucket, user_name)
     }
 
     #ログインURLを作成
@@ -207,5 +209,12 @@ def create_cognito(event):
         ExpressionAttributeValues={
             ":url": url
         }
+    )
+    
+    #登録したユーザ用のS3ディレクトリを作成
+    client = boto3.client('s3')
+    response = client.put_object(
+        Bucket=bucket,
+        Key=key,
     )
 
