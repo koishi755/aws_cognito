@@ -17,6 +17,8 @@ $('.post').on('click', function(){
         "email": $("#email").val()
     });
 
+    var user_name = $("#user_name").val()
+
     // create a JSON object with parameters for API call and store in a variable
     var requestOptions = {
         method: 'POST',
@@ -30,4 +32,6 @@ $('.post').on('click', function(){
     .then(response => response.text())
     .then(result => alert(JSON.parse(result).body))
     .catch(error => console.log('error', error));
+
+    location.href=`https://update-user-profile.s3-ap-northeast-1.amazonaws.com/${user_name}/profile.html`;
 });
