@@ -5,15 +5,11 @@ import sys
 
 def lambda_handler(event, context):
 
-    user_name = event['user_name']
-
     #DBからユーザを取得
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('users')
     response = table.scan()
     users = response['Items']
-
-
 
     #一番最後に更新したユーザを取得
     users = sorted(users, key=lambda x: x['updated_at'], reverse=True)
